@@ -97,19 +97,10 @@ const deleteTeacher = async (id) => {
 }
 
 const readStudents = async () => {
+  const db = await getDb();
   const sql = `SELECT * FROM student`;
-  return new Promise((resolve, reject) => {
-    knex_db
-      .raw(sql)
-      .then((result) => {
-        const rows =
-          Array.isArray(result) && Array.isArray(result[0]) ? result[0] : result?.rows;
-        resolve(rows);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+  const result = await db.raw(sql);
+  return result?.rows || result[0];
 };
 
 const readStudentInfo = async (id) => {
