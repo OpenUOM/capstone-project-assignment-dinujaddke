@@ -102,13 +102,16 @@ const readStudents = async () => {
     knex_db
       .raw(sql)
       .then((result) => {
-        resolve(result[0]); // unwrap actual rows from knex response
+        // Unwrap the rows safely depending on database
+        const rows = result?.rows || result[0]; 
+        resolve(rows);
       })
       .catch((error) => {
         reject(error);
       });
   });
 };
+
 
 const readStudentInfo = async (id) => {
     const sql = `SELECT * FROM student WHERE id = ?`;
@@ -124,23 +127,25 @@ const readStudentInfo = async (id) => {
     });
 };
 
-const addStudent = async (id, name, age, religion) => {
-    const insertSql = `INSERT INTO student(id, name, age, religion) VALUES (?, ?, ?, ?)`;
-    const selectSql = `SELECT * FROM student`;
-    return new Promise((resolve, reject) => {
-        knex_db
-            .raw(insertSql, [id, name, age, religion])
-            .then(() => {
-                return knex_db.raw(selectSql);
-            })
-            .then((result) => {
-                resolve(result[0]);
-            })
-            .catch((error) => {
-                reject(error);
-            });
-    });
+const addStudent = async (id, name, age, hometown) => {
+  const insertSql = `INSERT INTO student(id, name, age, hometown) VALUES (?, ?, ?, ?)`;
+  const selectSql = `SELECT * FROM student`;
+  return new Promise((resolve, reject) => {
+    knex_db
+      .raw(insertSql, [id, name, age, hometown])
+      .then(() => {
+        return knex_db.raw(selectSql);
+      })
+      .then((result) => {
+        const rows = result?.rows || result[0]; // compatibility across DBs
+        resolve(rows);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
+
 
 const updateStudent = async (name, age, religion, id) => {
     const sql = `UPDATE student SET name=?, age=?, religion=? WHERE id=?`;
