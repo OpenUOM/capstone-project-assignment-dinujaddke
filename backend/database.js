@@ -51,22 +51,15 @@ const readTeacherInfo = async (id) => {
 }
 
 const addTeacher = async (id, name, age) => {
-    const sql = `INSERT INTO teacher(id, name, age) VALUES (?, ?, ?)`;
-    return new Promise((resolve, reject) => {
-        knex_db
-            .raw(sql, [id, name, age])
-            .then(() => knex_db.raw(`SELECT * FROM teacher`))
-            .then((result) => {
-                // Depending on knex/sqlite driver, result[0] is usually the rows
-                const teachers = Array.isArray(result) && Array.isArray(result[0]) ? result[0] : result;
-                resolve(teachers);
-            })
-            .catch((error) => {
-                reject(error);
-            });
-    });
+  const sql = `INSERT INTO teacher(id, name, age) VALUES (?, ?, ?)`;
+  try {
+    await knex_db.raw(sql, [id, name, age]);
+    const result = await knex_db.raw(`SELECT * FROM teacher`);
+    return result[0];  // unwrap rows array (depending on DB driver)
+  } catch (error) {
+    throw error;
+  }
 };
-
 
 const updateTeacher = async (name, age, id) => {
     const sql = `UPDATE teacher SET name=?, age=? WHERE id=?`
