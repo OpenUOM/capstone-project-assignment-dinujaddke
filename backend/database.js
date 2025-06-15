@@ -102,7 +102,8 @@ const readStudents = async () => {
     knex_db
       .raw(sql)
       .then((result) => {
-        const rows = result?.rows || result[0]; // PostgreSQL / SQLite compatibility
+        const rows =
+          Array.isArray(result) && Array.isArray(result[0]) ? result[0] : result?.rows;
         resolve(rows);
       })
       .catch((error) => {
