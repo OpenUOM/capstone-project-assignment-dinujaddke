@@ -1,5 +1,8 @@
 name: Autograding Tests
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   repository_dispatch:
 
