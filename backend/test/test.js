@@ -12,7 +12,7 @@ beforeAll(async () => {
 /**
  * Reset the database after every test case
  */
-afterEach(async () => {
+beforeEach(async () => {
   await testBase.resetDatabase(db);
 });
 
