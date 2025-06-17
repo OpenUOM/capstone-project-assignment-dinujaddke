@@ -6,7 +6,6 @@ fixture`Testing Student UI`
 
 test('Testing add students', async t => {
     await t.navigateTo("/dbinitialize");
-    await t.wait(3000);  // wait for DB init
 
     await t.navigateTo("/addStudent");
     await t.typeText("#student-id", "999999");
@@ -15,16 +14,12 @@ test('Testing add students', async t => {
     await t.typeText("#student-Hometown", "Catholic");
     await t.click("#student-add");
 
-    await t.wait(3000);  // wait for add to complete
-
-    await t.eval(() => location.href = '/student');
-    await t.wait(3000);  // wait for full page reload
+    await t.wait(1000); // wait for add to complete
 
     await t.navigateTo("/student");
 
     const table = Selector('#student-table');
-    await t.expect(table.exists).ok({ timeout: 5000 });  // wait for table
-
     const studentRow = table.find('tr').withText('Pasindu Basnayaka');
+
     await t.expect(studentRow.exists).ok({ timeout: 5000 });
 });
